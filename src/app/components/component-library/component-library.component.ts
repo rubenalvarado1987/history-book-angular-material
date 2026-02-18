@@ -15,6 +15,7 @@ import { InputFieldComponent } from '../input-field/input-field.component';
 import { DataTableComponent } from '../data-table/data-table.component';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { StatBadgeComponent } from '../stat-badge/stat-badge.component';
+import { ChartsShowcaseComponent } from '../charts/charts-showcase.component';
 
 @Component({
   selector: 'app-component-library',
@@ -24,6 +25,7 @@ import { StatBadgeComponent } from '../stat-badge/stat-badge.component';
     MaterialModule,
     StatsCardComponent,
     ChartCardComponent,
+    ChartsShowcaseComponent,
     UserCardComponent,
     AlertBannerComponent,
     BadgeComponent,

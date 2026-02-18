@@ -59,10 +59,7 @@
       <p>Visualización de datos con gráficos interactivos. Ideal para análisis y tendencias. Mantén legendas claras y usa colores que contrasten.</p>
     </div>
     <div class="components-grid">
-      <app-chart-card
-        *ngFor="let variant of chartVariants"
-        [title]="variant.title">
-      </app-chart-card>
+      <app-charts-showcase></app-charts-showcase>
     </div>
   </div>
 
