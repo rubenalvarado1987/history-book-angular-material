@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../material.module';
 import { StatsCardComponent } from '../stats-card/stats-card.component';
-import { ChartCardComponent } from '../chart-card/chart-card.component';
 import { UserCardComponent } from '../user-card/user-card.component';
 import { AlertBannerComponent } from '../alert-banner/alert-banner.component';
 import { BadgeComponent } from '../badge/badge.component';
@@ -16,6 +15,7 @@ import { DataTableComponent } from '../data-table/data-table.component';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { StatBadgeComponent } from '../stat-badge/stat-badge.component';
 import { ChartsShowcaseComponent } from '../charts/charts-showcase.component';
+import { ChartJsShowcaseComponent } from '../charts/chartjs-showcase.component';
 
 @Component({
   selector: 'app-component-library',
@@ -24,8 +24,8 @@ import { ChartsShowcaseComponent } from '../charts/charts-showcase.component';
     CommonModule,
     MaterialModule,
     StatsCardComponent,
-    ChartCardComponent,
     ChartsShowcaseComponent,
+    ChartJsShowcaseComponent,
     UserCardComponent,
     AlertBannerComponent,
     BadgeComponent,

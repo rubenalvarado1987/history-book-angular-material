@@ -1,222 +1,129 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  ChartComponent,
-  NgApexchartsModule,
-  ApexChart,
-  ApexAxisChartSeries,
-  ApexNonAxisChartSeries,
-  ApexResponsive,
-  ApexTitleSubtitle,
-  ApexStroke,
-  ApexMarkers,
-  ApexXAxis,
-  ApexYAxis,
-  ApexTooltip,
-  ApexLegend,
-  ApexFill,
-  ApexPlotOptions,
-  ApexDataLabels,
-  ApexGrid,
-  ApexAnnotations,
-  ApexSeries
-} from 'ng-apexcharts';
 
-export type ChartOptions = {
-  series?: ApexSeries | any;
-  chart?: ApexChart;
-  xaxis?: ApexXAxis;
-  yaxis?: ApexYAxis | ApexYAxis[];
-  stroke?: ApexStroke;
-  title?: ApexTitleSubtitle;
-  labels?: string[];
-  colors?: string[];
-  plotOptions?: ApexPlotOptions;
-  dataLabels?: ApexDataLabels;
-  tooltip?: ApexTooltip;
-  legend?: ApexLegend;
-  fill?: ApexFill;
-  grid?: ApexGrid;
-  markers?: ApexMarkers;
-  responsive?: ApexResponsive[];
-};
+type Series = number[];
 
 @Component({
   selector: 'app-charts-showcase',
   standalone: true,
-  imports: [CommonModule, NgApexchartsModule],
+  imports: [CommonModule],
   template: `
     <section class="charts-showcase">
       <div class="charts-grid">
-        <div class="chart-card" *ngFor="let cfg of chartConfigs">
-          <h4>{{ cfg.title }}</h4>
-          <apx-chart
-            [series]="cfg.series"
-            [chart]="cfg.chart"
-            [xaxis]="cfg.xaxis"
-            [yaxis]="cfg.yaxis"
-            [stroke]="cfg.stroke"
-            [labels]="cfg.labels"
-            [colors]="cfg.colors"
-            [plotOptions]="cfg.plotOptions"
-            [dataLabels]="cfg.dataLabels"
-            [tooltip]="cfg.tooltip"
-            [legend]="cfg.legend"
-            [fill]="cfg.fill"
-            [grid]="cfg.grid"
-            [markers]="cfg.markers"
-            [responsive]="cfg.responsive"
-          ></apx-chart>
+        <div class="chart-card" *ngFor="let c of charts">
+          <h4>{{ c.title }}</h4>
+          <div class="chart-body">
+            <ng-container [ngSwitch]="c.type">
+              <svg *ngSwitchCase="'line'" viewBox="0 0 300 120" class="svg-chart">
+                <path [attr.d]="linePath(c.data)" fill="none" stroke="#3b82f6" stroke-width="2"></path>
+              </svg>
+
+              <svg *ngSwitchCase="'area'" viewBox="0 0 300 120" class="svg-chart">
+                <path [attr.d]="areaPath(c.data)" fill="#bfdbfe" stroke="#3b82f6" stroke-width="1.5" opacity="0.95"></path>
+              </svg>
+
+              <svg *ngSwitchCase="'bar'" viewBox="0 0 300 120" class="svg-chart">
+                <g *ngFor="let b of c.data; let i = index">
+                  <rect [attr.x]="10 + i*22" [attr.y]="120 - (b*0.9)" [attr.width]="16" [attr.height]="b*0.9" fill="#10b981"></rect>
+                </g>
+              </svg>
+
+              <svg *ngSwitchCase="'donut'" viewBox="0 0 120 120" class="svg-chart small">
+                <g transform="translate(60,60)">
+                  <ng-container *ngFor="let seg of c.data; let i = index">
+                    <circle r="30" fill="transparent" stroke-width="20" [attr.stroke]="colors[i%colors.length]" [attr.stroke-dasharray]="segmentLength(seg,c.data) + ' ' + (circumference - segmentLength(seg,c.data))" [attr.transform]="'rotate(' + offsetAngle(c.data,i) + ')'" stroke-linecap="butt"></circle>
+                  </ng-container>
+                  <text x="0" y="4" text-anchor="middle" font-size="12">{{ c.center || '' }}</text>
+                </g>
+              </svg>
+
+              <svg *ngSwitchCase="'scatter'" viewBox="0 0 300 120" class="svg-chart">
+                <g *ngFor="let p of c.data">
+                  <circle [attr.cx]="p[0]*4" [attr.cy]="120 - p[1]*3" r="4" fill="#f97316" opacity="0.95"></circle>
+                </g>
+              </svg>
+
+              <div *ngSwitchCase="'heatmap'" class="heatmap">
+                <div *ngFor="let row of c.data" class="heat-row">
+                  <div *ngFor="let val of row" class="heat-cell" [style.background]="heatColor(val)"></div>
+                </div>
+              </div>
+
+              <svg *ngSwitchCase="'spark'" viewBox="0 0 120 40" class="svg-chart small">
+                <path [attr.d]="sparkPath(c.data)" fill="none" stroke="#6366f1" stroke-width="2"></path>
+              </svg>
+
+              <svg *ngSwitchDefault viewBox="0 0 300 120" class="svg-chart">
+                <text x="50%" y="50%" text-anchor="middle">Tipo no soportado</text>
+              </svg>
+            </ng-container>
+          </div>
         </div>
       </div>
     </section>
   `,
   styles: [
     `
-      .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.25rem; }
-      .chart-card { background: #ffffff; border-radius: 8px; padding: 1rem; box-shadow: 0 2px 8px rgba(2,6,23,0.06); }
-      h4 { margin: 0 0 0.75rem 0; font-size: 1rem; }
+      .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+      .chart-card { background: #ffffff; border-radius: 8px; padding: 0.75rem; box-shadow: 0 2px 8px rgba(2,6,23,0.04); }
+      h4 { margin: 0 0 0.5rem 0; font-size: 0.98rem; color: #0f172a }
+      .svg-chart { width: 100%; height: auto; display: block; }
+      .svg-chart.small { width: 120px; height: 120px; }
+      .heatmap { display:flex; flex-direction:column; gap:4px }
+      .heat-row { display:flex; gap:4px }
+      .heat-cell { width:20px; height:14px; border-radius:2px }
     `
   ]
 })
 export class ChartsShowcaseComponent {
-  // Shared categories for example
-  categories = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  colors = ['#3b82f6','#10b981','#f97316','#8b5cf6','#ef4444'];
 
-  chartConfigs: ChartOptions[] = [];
+  charts: { title: string; type: string; data: any; center?: string }[] = [];
 
   constructor(){
-    this.initCharts();
+    this.buildExamples();
   }
 
-  initCharts(){
-    // Line
-    this.chartConfigs.push({
-      title: 'Line - Series Temporal',
-      series: [{ name: 'Ventas', data: [120, 200, 150, 300, 250, 360, 400, 420, 380, 450, 480, 520] }] as ApexAxisChartSeries,
-      chart: { type: 'line', height: 260 },
-      stroke: { curve: 'smooth' },
-      xaxis: { categories: this.categories }
-    });
-
-    // Area
-    this.chartConfigs.push({
-      title: 'Area - Volumen',
-      series: [{ name: 'Usuarios', data: [30,60,45,80,70,90,120,160,140,170,190,210] }] as ApexAxisChartSeries,
-      chart: { type: 'area', height: 260 },
-      fill: { opacity: 0.4 },
-      stroke: { curve: 'smooth' },
-      xaxis: { categories: this.categories }
-    });
-
-    // Grouped Bar
-    this.chartConfigs.push({
-      title: 'Grouped Bar',
-      series: [
-        { name: '2024', data: [23, 34, 45, 56, 67, 78] },
-        { name: '2025', data: [34, 44, 55, 66, 77, 88] }
-      ] as ApexAxisChartSeries,
-      chart: { type: 'bar', height: 300 },
-      plotOptions: { bar: { horizontal: false, columnWidth: '45%' } },
-      xaxis: { categories: ['Jan','Feb','Mar','Apr','May','Jun'] }
-    });
-
-    // Stacked Bar
-    this.chartConfigs.push({
-      title: 'Stacked Bar',
-      series: [
-        { name: 'Desktop', data: [44,55,41,67,22,43] },
-        { name: 'Mobile', data: [13,23,20,8,13,27] },
-        { name: 'Tablet', data: [11,17,15,15,21,14] }
-      ] as ApexAxisChartSeries,
-      chart: { type: 'bar', height: 300, stacked: true },
-      plotOptions: { bar: { horizontal: false } },
-      xaxis: { categories: ['Jan','Feb','Mar','Apr','May','Jun'] }
-    });
-
-    // Donut
-    this.chartConfigs.push({
-      title: 'Donut - Proporciones',
-      series: [44, 55, 13, 43] as ApexNonAxisChartSeries,
-      chart: { type: 'donut', height: 260 },
-      labels: ['Desktop','Mobile','Tablet','Other'],
-      legend: { position: 'bottom' }
-    });
-
-    // Scatter
-    this.chartConfigs.push({
-      title: 'Scatter - Correlación',
-      series: [
-        { name: 'Grupo A', data: [[10, 20],[15, 25],[20, 10],[25, 30]] },
-        { name: 'Grupo B', data: [[12, 14],[18, 22],[22, 28],[28, 18]] }
-      ],
-      chart: { type: 'scatter', height: 300 },
-      xaxis: { tickAmount: 10 }
-    });
-
-    // Bubble
-    this.chartConfigs.push({
-      title: 'Bubble - Tercera dimensión',
-      series: [
-        { name: 'Dataset', data: [[9, 81, 63], [98, 5, 89], [51, 50, 60], [12, 50, 35]] }
-      ],
-      chart: { height: 300, type: 'bubble' }
-    });
-
-    // Heatmap
-    this.chartConfigs.push({
-      title: 'Heatmap - Densidad',
-      series: [
-        { name: 'Mon', data: [22, 29, 13, 32, 44, 52, 41] },
-        { name: 'Tue', data: [11, 32, 45, 32, 34, 52, 41] },
-        { name: 'Wed', data: [8, 25, 33, 21, 17, 27, 30] }
-      ],
-      chart: { type: 'heatmap', height: 260 },
-      plotOptions: { heatmap: { radius: 4 } },
-      xaxis: { categories: ['1','2','3','4','5','6','7'] }
-    });
-
-    // Radar
-    this.chartConfigs.push({
-      title: 'Radar - Perfil',
-      series: [{ name: 'Producto A', data: [80, 50, 30, 40, 100, 20] }],
-      chart: { type: 'radar', height: 300 },
-      labels: ['UX','Performance','Funcionalidad','Seguridad','Escalabilidad','Soporte']
-    });
-
-    // Sparkline (mini)
-    this.chartConfigs.push({
-      title: 'Sparkline',
-      series: [{ name: 'Trend', data: [5,8,6,9,7,10,14,12,15] }],
-      chart: { type: 'area', height: 120, sparkline: { enabled: true } },
-      stroke: { curve: 'smooth' },
-      fill: { opacity: 0.2 }
-    });
-
-    // Combo (line + column)
-    this.chartConfigs.push({
-      title: 'Combo - Column + Line',
-      series: [
-        { name: 'Revenue', type: 'column', data: [23, 11, 22, 27, 13, 22] },
-        { name: 'Profit', type: 'line', data: [44, 55, 41, 67, 22, 43] }
-      ],
-      chart: { height: 300, type: 'line' },
-      xaxis: { categories: ['Jan','Feb','Mar','Apr','May','Jun'] }
-    });
-
-    // Gauge (radialBar)
-    this.chartConfigs.push({
-      title: 'Gauge - KPI',
-      series: [67],
-      chart: { height: 260, type: 'radialBar' },
-      plotOptions: { radialBar: { hollow: { size: '60%' }, dataLabels: { name: { show: true }, value: { show: true } } } }
-    });
-
-    // Treemap
-    this.chartConfigs.push({
-      title: 'Treemap - Jerarquía',
-      series: [{ data: [ { x: 'A', y: 19 }, { x: 'B', y: 12 }, { x: 'C', y: 7 }, { x: 'D', y: 5 } ] }],
-      chart: { height: 260, type: 'treemap' }
-    });
+  buildExamples(){
+    this.charts.push({ title: 'Line - Series Temporal', type: 'line', data: [12,20,15,30,25,36,40,42,38,45,48,52] });
+    this.charts.push({ title: 'Area - Volumen', type: 'area', data: [3,6,4,8,7,9,12,16,14,17,19,21] });
+    this.charts.push({ title: 'Bar - Agrupada (ejemplo simple)', type: 'bar', data: [23,34,45,56,67,78] });
+    this.charts.push({ title: 'Donut - Proporciones', type: 'donut', data: [44,55,13,43], center: 'Total' });
+    this.charts.push({ title: 'Scatter - Correlación', type: 'scatter', data: [[10,20],[15,25],[20,10],[25,30],[12,14]] });
+    this.charts.push({ title: 'Heatmap - Densidad (3x7)', type: 'heatmap', data: [[22,29,13,32,44,52,41],[11,32,45,32,34,52,41],[8,25,33,21,17,27,30]] });
+    this.charts.push({ title: 'Sparkline', type: 'spark', data: [5,8,6,9,7,10,14,12,15] });
   }
+
+  // Helpers to map data to path
+  private scale(points: number[], width = 300, height = 100){
+    const max = Math.max(...points);
+    const min = Math.min(...points);
+    const range = max - min || 1;
+    return points.map((v,i)=>({ x: (i/(points.length-1))*width, y: height - ((v-min)/range)*height }));
+  }
+
+  linePath(data: Series){
+    const pts = this.scale(data);
+    return pts.map((p,i)=> (i===0?`M ${p.x} ${p.y}`:`L ${p.x} ${p.y}`)).join(' ');
+  }
+
+  areaPath(data: Series){
+    const pts = this.scale(data);
+    const path = pts.map((p,i)=> (i===0?`M ${p.x} ${p.y}`:`L ${p.x} ${p.y}`)).join(' ');
+    const last = pts[pts.length-1];
+    const first = pts[0];
+    return `${path} L ${last.x} 100 L ${first.x} 100 Z`;
+  }
+
+  sparkPath(data: Series){
+    const pts = this.scale(data, 120, 40);
+    return pts.map((p,i)=> (i===0?`M ${p.x} ${p.y}`:`L ${p.x} ${p.y}`)).join(' ');
+  }
+
+  // Donut helpers
+  get circumference(){ return 2*Math.PI*30; }
+  segmentLength(value:number, arr:number[]){ const total = arr.reduce((s,n)=>s+n,0)||1; return (value/total)*this.circumference; }
+  offsetAngle(arr:number[], index:number){ const before = arr.slice(0,index).reduce((s,n)=>s+n,0)||0; const angle = (before/ (arr.reduce((s,n)=>s+n,0)||1)) * 360; return angle - 90; }
+
+  heatColor(v:number){ const max = 60; const ratio = Math.min(1, v/max); const r = Math.round(240*ratio); const g = Math.round(240*(1-ratio)); return `rgb(${r},${g},120)`; }
 }
