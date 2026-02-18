@@ -15,7 +15,6 @@ import { InputFieldComponent } from '../input-field/input-field.component';
 import { DataTableComponent } from '../data-table/data-table.component';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { StatBadgeComponent } from '../stat-badge/stat-badge.component';
-import { ChartsShowcaseComponent } from '../charts/charts-showcase.component';
 import { ChartJsShowcaseComponent } from '../charts/chartjs-showcase.component';
 
 @Component({
@@ -26,7 +25,6 @@ import { ChartJsShowcaseComponent } from '../charts/chartjs-showcase.component';
     ReactiveFormsModule,
     MaterialModule,
     StatsCardComponent,
-    ChartsShowcaseComponent,
     ChartJsShowcaseComponent,
     UserCardComponent,
     AlertCenterComponent,
