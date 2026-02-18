@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+::ng-deep {
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    height: 100%;
+  }
+}

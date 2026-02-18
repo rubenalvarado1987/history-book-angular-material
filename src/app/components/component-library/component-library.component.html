@@ -1,0 +1,436 @@
+<div class="component-library">
+  <!-- Sidebar Navigation for Components -->
+  <aside class="components-sidebar">
+    <div class="sidebar-section-header">
+      <span class="section-title">📦 Componentes</span>
+    </div>
+    
+    <div class="components-nav">
+      <button 
+        class="component-nav-link"
+        (click)="selectedComponent = 'all'"
+        [class.active]="selectedComponent === 'all'"
+        title="Ver todos los componentes">
+        <mat-icon>dashboard</mat-icon>
+        <span>Todos</span>
+      </button>
+      <button 
+        *ngFor="let comp of components"
+        class="component-nav-link"
+        (click)="selectedComponent = comp.id"
+        [class.active]="selectedComponent === comp.id"
+        [title]="comp.description">
+        <mat-icon>{{ comp.icon }}</mat-icon>
+        <span>{{ comp.label }}</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <div class="library-content">
+    <div class="library-header">
+      <h1>📚 HistoryBook</h1>
+      <p>Guía de componentes con mejores prácticas UX para desarrolladores</p>
+    </div>
+
+    <!-- Stats Cards Section -->
+    <div class="section" *ngIf="selectedComponent === 'all' || selectedComponent === 'stats'">
+    <div class="section-header">
+      <h2>📊 Tarjetas Estadísticas</h2>
+      <p>Métricas clave con indicadores de tendencia. Usa en dashboards ejecutivos para KPIs. Cada tarjeta debe tener un propósito claro y valores comparativos.</p>
+    </div>
+    <div class="components-grid">
+      <app-stats-card
+        *ngFor="let variant of statsCardVariants"
+        [title]="variant.title"
+        [value]="variant.value"
+        [changePercent]="variant.changePercent"
+        [isPositive]="variant.isPositive"
+        [icon]="variant.icon"
+        [variant]="variant.variant">
+      </app-stats-card>
+    </div>
+  </div>
+
+  <!-- Chart Cards Section -->
+  <div class="section" *ngIf="selectedComponent === 'all' || selectedComponent === 'charts'">
+    <div class="section-header">
+      <h2>📈 Gráficos</h2>
+      <p>Visualización de datos con gráficos interactivos. Ideal para análisis y tendencias. Mantén legendas claras y usa colores que contrasten.</p>
+    </div>
+    <div class="components-grid">
+      <app-chart-card
+        *ngFor="let variant of chartVariants"
+        [title]="variant.title">
+      </app-chart-card>
+    </div>
+  </div>
+
+  <!-- User Cards Section -->
+  <div class="section" *ngIf="selectedComponent === 'all' || selectedComponent === 'users'">
+    <div class="section-header">
+      <h2>👤 Perfiles de Usuario</h2>
+      <p>Tarjetas de perfil con información social. Perfectas para directorios, comentarios o secciones de equipo. Destaca roles y logros principales.</p>
+    </div>
+    <div class="components-grid users-grid">
+      <app-user-card
+        *ngFor="let variant of userVariants"
+        [name]="variant.name"
+        [role]="variant.role"
+        [bio]="variant.bio"
+        [followers]="variant.followers"
+        [following]="variant.following"
+        [posts]="variant.posts"
+        [avatarColor]="variant.avatarColor">
+      </app-user-card>
+    </div>
+  </div>
+
+  <!-- Alerts Section -->
+  <div class="section" *ngIf="selectedComponent === 'all' || selectedComponent === 'alerts'">
+    <div class="section-header">
+      <h2>🔔 Alertas</h2>
+      <p>Notificaciones contextuales con niveles de severidad. Coloca en zonas visibles sin bloquear contenido. Usa colores que reflejen urgencia.</p>
+    </div>
+    <div class="alerts-container">
+      <app-alert-banner
+        *ngFor="let variant of alertVariants"
+        [title]="variant.title"
+        [message]="variant.message"
+        [severity]="variant.severity">
+      </app-alert-banner>
+    </div>
+  </div>
+
+  <!-- Badges Section -->
+  <div class="section" *ngIf="selectedComponent === 'all' || selectedComponent === 'badges'">
+    <div class="section-header">
+      <h2>🌠 Etiquetas</h2>
+      <p>Indicadores compactos de estado y categorías. Usa máximo 2-3 por elemento. Los colores deben ser coherentes en toda la app.</p>
+    </div>
+    <div class="badges-container">
+      <div class="badge-size-group">
+        <h4>Small</h4>
+        <div class="badge-group">
+          <app-badge
+            *ngFor="let variant of badgeVariants"
+            [label]="variant.label"
+            [variant]="variant.variant"
+            [size]="'small'"
+            [icon]="variant.icon">
+          </app-badge>
+        </div>
+      </div>
+      
+      <div class="badge-size-group">
+        <h4>Medium (Default)</h4>
+        <div class="badge-group">
+          <app-badge
+            *ngFor="let variant of badgeVariants"
+            [label]="variant.label"
+            [variant]="variant.variant"
+            [size]="'medium'"
+            [icon]="variant.icon">
+          </app-badge>
+        </div>
+      </div>
+      
+      <div class="badge-size-group">
+        <h4>Large</h4>
+        <div class="badge-group">
+          <app-badge
+            *ngFor="let variant of badgeVariants"
+            [label]="variant.label"
+            [variant]="variant.variant"
+            [size]="'large'"
+            [icon]="variant.icon">
+          </app-badge>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature Cards Section -->
+  <div class="section" *ngIf="selectedComponent === 'all' || selectedComponent === 'features'">
+    <div class="section-header">
+      <h2>✨ Tarjetas de Características</h2>
+      <p>Resalta beneficios y servicios con diseño impactante. Ideal para landing pages. Usa iconos grandes y descripciones concisas.</p>
+    </div>
+    
+    <div class="features-subsection">
+      <h3>Vertical Layout</h3>
+      <div class="components-grid">
+        <app-feature-card
+          *ngFor="let variant of featureVariants"
+          [icon]="variant.icon"
+          [iconColor]="variant.iconColor"
+          [title]="variant.title"
+          [description]="variant.description"
+          [layout]="'vertical'"
+          [meta]="variant.meta">
+        </app-feature-card>
+      </div>
+    </div>
+    
+    <div class="features-subsection">
+      <h3>Horizontal Layout</h3>
+      <div class="horizontal-grid">
+        <app-feature-card
+          *ngFor="let variant of featureVariants"
+          [icon]="variant.icon"
+          [iconColor]="variant.iconColor"
+          [title]="variant.title"
+          [description]="variant.description"
+          [layout]="'horizontal'"
+          [meta]="variant.meta">
+        </app-feature-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- Avatars Section -->
+  <div class="section" *ngIf="selectedComponent === 'all' || selectedComponent === 'avatars'">
+    <div class="section-header">
+      <h2>👤 Avatares</h2>
+      <p>Representación visual de usuarios con soporte para imágenes, iniciales e iconos. Usa siempre en comentarios y listas de usuarios. Las imágenes deben ser cuadradas y optimizadas.</p>
+    </div>
+    
+    <div class="avatars-subsection">
+      <h4>Small (32px)</h4>
+      <div class="avatars-group">
+        <app-avatar
+          *ngFor="let variant of avatarVariants"
+          size="small"
+          [initials]="variant.initials || ''"
+          [icon]="variant.icon || ''"
+          [image]="variant.image || ''"
+          [backgroundColor]="variant.color">
+        </app-avatar>
+      </div>
+    </div>
+
+    <div class="avatars-subsection">
+      <h4>Medium (48px)</h4>
+      <div class="avatars-group">
+        <app-avatar
+          *ngFor="let variant of avatarVariants"
+          size="medium"
+          [initials]="variant.initials || ''"
+          [icon]="variant.icon || ''"
+          [image]="variant.image || ''"
+          [backgroundColor]="variant.color">
+        </app-avatar>
+      </div>
+    </div>
+
+    <div class="avatars-subsection">
+      <h4>Large (64px)</h4>
+      <div class="avatars-group">
+        <app-avatar
+          *ngFor="let variant of avatarVariants"
+          size="large"
+          [initials]="variant.initials || ''"
+          [icon]="variant.icon || ''"
+          [image]="variant.image || ''"
+          [backgroundColor]="variant.color">
+        </app-avatar>
+      </div>
+    </div>
+
+    <div class="avatars-subsection">
+      <h4>Extra Large (96px)</h4>
+      <div class="avatars-group">
+        <app-avatar
+          *ngFor="let variant of avatarVariants"
+          size="xlarge"
+          [initials]="variant.initials || ''"
+          [icon]="variant.icon || ''"
+          [image]="variant.image || ''"
+          [backgroundColor]="variant.color">
+        </app-avatar>
+      </div>
+    </div>
+  </div>
+
+  <!-- Buttons Section -->
+  <div class="section" *ngIf="selectedComponent === 'all' || selectedComponent === 'buttons'">
+    <div class="section-header">
+      <h2>💫 Botones</h2>
+      <p>Elementos primarios de acción. Usa una jerarquía clara: Primary para acciones principales, Secondary para alternativas. Los textos deben ser verbos de acción.</p>
+    </div>
+
+    <div class="buttons-subsection">
+      <h4>Small</h4>
+      <div class="buttons-group">
+        <app-button
+          *ngFor="let variant of buttonVariants"
+          [label]="variant.label"
+          [variant]="variant.variant"
+          size="small">
+        </app-button>
+      </div>
+    </div>
+
+    <div class="buttons-subsection">
+      <h4>Medium (Default)</h4>
+      <div class="buttons-group">
+        <app-button
+          *ngFor="let variant of buttonVariants"
+          [label]="variant.label"
+          [variant]="variant.variant"
+          size="medium">
+        </app-button>
+      </div>
+    </div>
+
+    <div class="buttons-subsection">
+      <h4>Large</h4>
+      <div class="buttons-group">
+        <app-button
+          *ngFor="let variant of buttonVariants"
+          [label]="variant.label"
+          [variant]="variant.variant"
+          size="large">
+        </app-button>
+      </div>
+    </div>
+
+    <div class="buttons-subsection">
+      <h4>With Icons</h4>
+      <div class="buttons-group">
+        <app-button label="Save" variant="success" icon="save"></app-button>
+        <app-button label="Delete" variant="danger" icon="delete"></app-button>
+        <app-button label="Edit" variant="primary" icon="edit"></app-button>
+        <app-button label="Download" variant="secondary" icon="download"></app-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Section -->
+  <div class="section" *ngIf="selectedComponent === 'all' || selectedComponent === 'progress'">
+    <div class="section-header">
+      <h2>🏃 Barras de Progreso</h2>
+      <p>Visualiza completitud de procesos, descargas o cargas. Siempre muestra el porcentaje. Usa animación suave para cambios dinámicos. Para procesos muy largos, considera mostrar eta.</p>
+    </div>
+    <div class="progress-group">
+      <div class="progress-item" *ngFor="let variant of progressVariants">
+        <div class="progress-label">{{ variant.label }} ({{ variant.percentage }}%)</div>
+        <app-progress
+          [percentage]="variant.percentage"
+          [variant]="variant.variant">
+        </app-progress>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ratings Section -->
+  <div class="section" *ngIf="selectedComponent === 'all' || selectedComponent === 'ratings'">
+    <div class="section-header">
+      <h2>⭐ Calificaciones</h2>
+      <p>Muestra calificaciones con estrellas y cantidad de reseñas. Use en productos, reseñas o contenido. Las estrellas deben ser claramente interactivas si es modificable.</p>
+    </div>
+    <div class="ratings-group">
+      <app-rating
+        *ngFor="let variant of ratingVariants"
+        [rating]="variant.rating"
+        [reviewCount]="variant.reviewCount">
+      </app-rating>
+    </div>
+  </div>
+
+  <!-- Input Fields Section -->
+  <div class="section" *ngIf="selectedComponent === 'all' || selectedComponent === 'inputs'">
+    <div class="section-header">
+      <h2>✏️ Campos de Entrada</h2>
+      <p>Inputs flexibles con validación y soporte de iconos. Siempre incluye labels descriptivos y textos de ayuda claros. Muestra errores al lado del campo.</p>
+    </div>
+    <div class="inputs-grid">
+      <app-input-field
+        label="Username"
+        placeholder="Enter your username"
+        variant="primary"
+        icon="account_circle"
+        iconPosition="left">
+      </app-input-field>
+      <app-input-field
+        label="Email"
+        placeholder="Enter your email"
+        variant="success"
+        icon="mail"
+        iconPosition="left">
+      </app-input-field>
+      <app-input-field
+        label="Password"
+        placeholder="Enter your password"
+        variant="warning"
+        icon="lock"
+        iconPosition="left">
+      </app-input-field>
+      <app-input-field
+        label="Search"
+        placeholder="Search..."
+        variant="danger"
+        icon="search"
+        iconPosition="right">
+      </app-input-field>
+      <app-input-field
+        label="Disabled Input"
+        placeholder="This is disabled"
+        variant="primary"
+        [disabled]="true">
+      </app-input-field>
+      <app-input-field
+        label="With Helper"
+        placeholder="Enter something"
+        variant="primary"
+        helperText="This field helps you understand">
+      </app-input-field>
+    </div>
+  </div>
+
+  <!-- Data Table Section -->
+  <div class="section" *ngIf="selectedComponent === 'all' || selectedComponent === 'tables'">
+    <div class="section-header">
+      <h2>📋 Tabla de Datos</h2>
+      <p>Tabla responsive con ordenamiento y filas claras. Usa para datos estructurados. Agrega paginación si hay más de 10 filas. Mantener cabecera fija en scroll.</p>
+    </div>
+    <app-data-table
+      [columns]="tableColumns"
+      [rows]="tableData">
+    </app-data-table>
+  </div>
+
+  <!-- Pagination Section -->
+  <div class="section" *ngIf="selectedComponent === 'all' || selectedComponent === 'pagination'">
+    <div class="section-header">
+      <h2>🔢 Paginación</h2>
+      <p>Controles de navegación entre páginas. Mantén estado de página en URL para permitir compartir. Muestra total de páginas e índice actual.</p>
+    </div>
+    <div class="pagination-container">
+      <app-pagination
+        [currentPage]="currentPage"
+        [totalPages]="5"
+        (pageChanged)="onPageChanged($event)">
+      </app-pagination>
+      <p>Current Page: {{ currentPage }}</p>
+    </div>
+  </div>
+
+  <!-- Stat Badges Section -->
+  <div class="section" *ngIf="selectedComponent === 'all' || selectedComponent === 'stat-badges'">
+    <div class="section-header">
+      <h2>🎯 Badges Estadísticos</h2>
+      <p>Mini tarjetas con números y contexto. Perfectas para dashboards compactos. Usa para mostrar métricas secundarias al lado de gráficos.</p>
+    </div>
+    <div class="stat-badges-grid">
+      <app-stat-badge
+        *ngFor="let variant of statBadgeVariants"
+        [label]="variant.label"
+        [number]="variant.number"
+        [subtitle]="variant.subtitle"
+        [icon]="variant.icon"
+        [variant]="variant.variant">
+      </app-stat-badge>
+    </div>
+  </div>
+  </div>
