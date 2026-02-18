@@ -9,7 +9,7 @@ import { MaterialModule } from '../../material.module';
   template: `
     <div class="input-wrapper">
       <label *ngIf="label" class="input-label">{{ label }}</label>
-      <div class="input-container">
+      <div class="input-container" [class.has-icon-left]="icon && iconPosition === 'left'" [class.has-icon-right]="icon && iconPosition === 'right'">
         <mat-icon *ngIf="icon && iconPosition === 'left'" class="input-icon-left">{{ icon }}</mat-icon>
         <input 
           [type]="type"
@@ -121,14 +121,13 @@ import { MaterialModule } from '../../material.module';
       pointer-events: none;
     }
     
-    .input-field {
-      &:has(~ .input-icon-left) {
-        padding-left: 2.5rem;
-      }
-      
-      &:has(~ .input-icon-right) {
-        padding-right: 2.5rem;
-      }
+    /* Apply padding when container indicates there is an icon */
+    .input-container.has-icon-left .input-field {
+      padding-left: 2.5rem;
+    }
+
+    .input-container.has-icon-right .input-field {
+      padding-right: 2.5rem;
     }
     
     .input-helper {
