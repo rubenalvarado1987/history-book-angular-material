@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { MaterialModule } from '../../material.module';
 import { StatsCardComponent } from '../stats-card/stats-card.component';
 import { UserCardComponent } from '../user-card/user-card.component';
 import { AlertBannerComponent } from '../alert-banner/alert-banner.component';
+import { AlertCenterComponent } from '../alert-center/alert-center.component';
 import { BadgeComponent } from '../badge/badge.component';
 import { FeatureCardComponent } from '../feature-card/feature-card.component';
 import { AvatarComponent } from '../avatar/avatar.component';
@@ -22,12 +24,14 @@ import { ChartJsShowcaseComponent } from '../charts/chartjs-showcase.component';
   standalone: true,
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     MaterialModule,
     StatsCardComponent,
     ChartsShowcaseComponent,
     ChartJsShowcaseComponent,
     UserCardComponent,
     AlertBannerComponent,
+    AlertCenterComponent,
     BadgeComponent,
     FeatureCardComponent,
     AvatarComponent,
@@ -213,4 +217,42 @@ export class HistoryBookComponent {
     { label: 'Growth', number: '+18%', subtitle: 'Month over month', icon: 'trending_up', variant: 'warning' as const },
     { label: 'Issues', number: '12', subtitle: 'To resolve', icon: 'warning', variant: 'danger' as const }
   ];
+
+  // expose alert usage
+  alertUsage: string = `// Usar AlertService (singleton)\nimport { AlertService } from 'src/app/services/alert.service';\n\nconstructor(private alerts: AlertService) {}\n\n// mostrar alerta\nthis.alerts.show({ title: 'Hecho', message: 'Guardado', severity: 'success', timeout: 4000 });`;
+
+  // InputField usage examples
+  inputUsage: string = `// Ejemplos de uso de InputField\n<app-input-field label="Search" type="search" placeholder="Buscar..." prefixIcon="search"></app-input-field>\n\n<app-input-field label="Password" type="password" placeholder="Password" prefixIcon="lock"></app-input-field>\n\n<app-input-field label="Comments" type="textarea" [rows]="6" placeholder="Escribe tu comentario..."></app-input-field>\n\n<app-input-field label="Quantity" type="number" placeholder="0"></app-input-field>\n\n// Ejemplo Reactive Forms:\nimport { ReactiveFormsModule, FormControl } from '@angular/forms';\nconst ctrl = new FormControl('');\n// en template: <app-input-field [formControl]="ctrl"></app-input-field>`;
+
+  // Reactive form demo
+  demoForm: FormGroup = new FormGroup({
+    username: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    comments: new FormControl('', []),
+    quantity: new FormControl<number | null>(null, [Validators.min(0)])
+  });
+
+  submitDemo() {
+    if (this.demoForm.valid) {
+      // simple demo action — in real app, call service
+      console.log('Demo form value', this.demoForm.value);
+      alert('Formulario válido — revisar consola');
+    } else {
+      this.demoForm.markAllAsTouched();
+    }
+  }
+
+  getErrorMessage(fieldName: string): string {
+    const control = this.demoForm.get(fieldName);
+    if (!control || !control.errors) return '';
+    
+    const errors = control.errors;
+    if (errors['required']) return 'Este campo es requerido.';
+    if (errors['minlength']) return `Mínimo ${errors['minlength'].requiredLength} caracteres.`;
+    if (errors['email']) return 'Email inválido.';
+    if (errors['min']) return `Mínimo valor: ${errors['min'].min}.`;
+    
+    return 'Campo inválido.';
+  }
 }

@@ -1,6 +1,6 @@
 <div class="component-library">
   <!-- Sidebar Navigation for Components -->
-  <aside class="components-sidebar">
+  <aside class="components-sidebar" aria-label="Navegación de componentes">
     <div class="sidebar-section-header">
       <span class="section-title">📦 Componentes</span>
     </div>
@@ -88,12 +88,15 @@
       <p>Notificaciones contextuales con niveles de severidad. Coloca en zonas visibles sin bloquear contenido. Usa colores que reflejen urgencia.</p>
     </div>
     <div class="alerts-container">
-      <app-alert-banner
-        *ngFor="let variant of alertVariants"
-        [title]="variant.title"
-        [message]="variant.message"
-        [severity]="variant.severity">
-      </app-alert-banner>
+      <div class="alerts-demo">
+        <app-alert-center></app-alert-center>
+      </div>
+
+      <aside class="usage-panel" aria-label="Cómo usar AlertService">
+        <h3>Cómo usar AlertService</h3>
+        <pre class="code-block"><code [innerText]="alertUsage"></code></pre>
+        <p>AlertService es inyectable en cualquier componente y maneja una lista reactiva de alertas.</p>
+      </aside>
     </div>
   </div>
 
@@ -339,47 +342,62 @@
       <h2>✏️ Campos de Entrada</h2>
       <p>Inputs flexibles con validación y soporte de iconos. Siempre incluye labels descriptivos y textos de ayuda claros. Muestra errores al lado del campo.</p>
     </div>
-    <div class="inputs-grid">
-      <app-input-field
-        label="Username"
-        placeholder="Enter your username"
-        variant="primary"
-        icon="account_circle"
-        iconPosition="left">
-      </app-input-field>
-      <app-input-field
-        label="Email"
-        placeholder="Enter your email"
-        variant="success"
-        icon="mail"
-        iconPosition="left">
-      </app-input-field>
-      <app-input-field
-        label="Password"
-        placeholder="Enter your password"
-        variant="warning"
-        icon="lock"
-        iconPosition="left">
-      </app-input-field>
-      <app-input-field
-        label="Search"
-        placeholder="Search..."
-        variant="danger"
-        icon="search"
-        iconPosition="right">
-      </app-input-field>
-      <app-input-field
-        label="Disabled Input"
-        placeholder="This is disabled"
-        variant="primary"
-        [disabled]="true">
-      </app-input-field>
-      <app-input-field
-        label="With Helper"
-        placeholder="Enter something"
-        variant="primary"
-        helperText="This field helps you understand">
-      </app-input-field>
+    <div class="chart-showcase-layout inputs-showcase-layout">
+      <div class="chart-area">
+        <div class="inputs-grid">
+          <app-input-field label="Username" placeholder="Enter your username" variant="primary" prefixIcon="account_circle"></app-input-field>
+          <app-input-field label="Email" placeholder="Enter your email" variant="success" prefixIcon="mail"></app-input-field>
+          <app-input-field label="Password" placeholder="Enter your password" type="password" variant="warning" prefixIcon="lock"></app-input-field>
+          <app-input-field label="Search" placeholder="Search..." type="search" variant="primary" prefixIcon="search"></app-input-field>
+          <app-input-field label="Comments" type="textarea" placeholder="Write a comment..." [rows]="4"></app-input-field>
+          <app-input-field label="Quantity" type="number" placeholder="0"></app-input-field>
+        </div>
+        
+        <div class="reactive-form-demo">
+          <h4>Demo: Formulario Reactivo Moderno</h4>
+          <form [formGroup]="demoForm" (ngSubmit)="submitDemo()" class="demo-form">
+            <div class="form-row">
+              <div class="form-col">
+                <app-input-field formControlName="username" label="Username" placeholder="Ej: juanperez" prefixIcon="account_circle" [error]="demoForm.get('username')?.touched && demoForm.get('username')?.invalid ? getErrorMessage('username') : ''"></app-input-field>
+              </div>
+              <div class="form-col">
+                <app-input-field formControlName="email" label="Email" placeholder="Ej: juan@email.com" prefixIcon="mail" [error]="demoForm.get('email')?.touched && demoForm.get('email')?.invalid ? getErrorMessage('email') : ''"></app-input-field>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col">
+                <app-input-field formControlName="password" label="Password" placeholder="Min. 6 caracteres" type="password" prefixIcon="lock" [error]="demoForm.get('password')?.touched && demoForm.get('password')?.invalid ? getErrorMessage('password') : ''"></app-input-field>
+              </div>
+              <div class="form-col">
+                <app-input-field formControlName="quantity" label="Cantidad" placeholder="0" type="number" [error]="demoForm.get('quantity')?.touched && demoForm.get('quantity')?.invalid ? getErrorMessage('quantity') : ''"></app-input-field>
+              </div>
+            </div>
+
+            <div class="form-row full-width">
+              <app-input-field formControlName="comments" label="Comentarios" placeholder="Escribe tus comentarios aquí..." type="textarea" [rows]="3"></app-input-field>
+            </div>
+            
+            <div class="form-actions">
+              <button mat-raised-button color="primary" type="submit" [disabled]="demoForm.invalid">✓ Enviar formulario</button>
+              <button mat-button type="button" (click)="demoForm.reset()">↻ Reset</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <aside class="usage-panel" aria-label="Cómo usar Inputs">
+        <h3>Cómo usar Inputs</h3>
+        <p>El componente acepta las variantes comunes: `text`, `password`, `textarea`, `search`, `number`. También soporta `prefixIcon` y `suffixIcon`.</p>
+        <pre class="code-block"><code [innerText]="inputUsage"></code></pre>
+        <h4>Props principales</h4>
+        <ul>
+          <li><strong>type</strong>: text | password | textarea | search | number</li>
+          <li><strong>prefixIcon / suffixIcon</strong>: nombre del icono Material</li>
+          <li><strong>rows</strong>: para textarea</li>
+          <li><strong>variant</strong>: primary | success | warning | danger</li>
+        </ul>
+      </aside>
     </div>
   </div>
 
