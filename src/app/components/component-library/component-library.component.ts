@@ -4,7 +4,6 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angula
 import { MaterialModule } from '../../material.module';
 import { StatsCardComponent } from '../stats-card/stats-card.component';
 import { UserCardComponent } from '../user-card/user-card.component';
-import { AlertBannerComponent } from '../alert-banner/alert-banner.component';
 import { AlertCenterComponent } from '../alert-center/alert-center.component';
 import { BadgeComponent } from '../badge/badge.component';
 import { FeatureCardComponent } from '../feature-card/feature-card.component';
@@ -30,7 +29,6 @@ import { ChartJsShowcaseComponent } from '../charts/chartjs-showcase.component';
     ChartsShowcaseComponent,
     ChartJsShowcaseComponent,
     UserCardComponent,
-    AlertBannerComponent,
     AlertCenterComponent,
     BadgeComponent,
     FeatureCardComponent,

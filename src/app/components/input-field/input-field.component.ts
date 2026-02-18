@@ -32,7 +32,7 @@ import { MaterialModule } from '../../material.module';
             [ngClass]="'input-' + variant"
             [class.input-error]="error"
             [value]="value"
-            (input)="onInput($event.target.value)"
+            (input)="handleInputChange($event)"
             (focus)="isFocused = true"
             (blur)="isFocused = false"></textarea>
 
@@ -45,7 +45,7 @@ import { MaterialModule } from '../../material.module';
             [ngClass]="'input-' + variant"
             [class.input-error]="error"
             [value]="value"
-            (input)="onInput($event.target.value)"
+            (input)="handleInputChange($event)"
             (focus)="isFocused = true"
             (blur)="isFocused = false">
 
@@ -440,6 +440,13 @@ export class InputFieldComponent implements ControlValueAccessor {
       this.value = v;
     }
     this.onChange(this.value);
+  }
+
+  handleInputChange(event: Event): void {
+    const target = event.target as HTMLInputElement | HTMLTextAreaElement;
+    if (target) {
+      this.onInput(target.value);
+    }
   }
 
   // ControlValueAccessor implementation
